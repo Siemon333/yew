@@ -17,17 +17,13 @@
         }
 
         .circle {
-            width: 200px;
-            height: 200px;
-            background-color: purple;
-            border-radius: 50%;
             position: absolute;
+            border-radius: 50%;
             transition: all ease;
         }
 
         .word {
             position: absolute;
-            font-size: 3em;
             display: none;
         }
     </style>
@@ -37,13 +33,21 @@
     <div class="word" id="wordDisplay"></div>
 
     <script>
-        let x = 5; // Verander deze waarde om de bewegingstijd van de cirkel aan te passen (in seconden)
+        let x = 2,7; // Bewegingstijd van de cirkel (in seconden)
+        let cooldown = 300; // Cooldown tussen bewegingen (in milliseconden)
+        let textSize = 2,3; // Tekstgrootte van het woord (in em)
+        let circleSize = 330; // Grootte van de cirkel (in pixels)
 
         const circle = document.querySelector('.circle');
         const wordDisplay = document.getElementById('wordDisplay');
         const words = ["leukheid", "coolheid", "scamheid", "goeiheid", "sensatieheid"];
         let speed = 1;
-        let interval = 500; // Cooldown ingesteld op 0,5 seconden
+
+        // Stel de grootte van de cirkel en tekst in
+        circle.style.width = `${circleSize}px`;
+        circle.style.height = `${circleSize}px`;
+        circle.style.backgroundColor = 'purple'; // Startkleur van de cirkel
+        wordDisplay.style.fontSize = `${textSize}em`;
 
         // Functie om de cirkel naar een willekeurige locatie te verplaatsen
         function moveCircle() {
@@ -61,8 +65,8 @@
             speed = Math.max(0.1, speed * 0.9);
         }
 
-        // Beweeg de cirkel elke 0,5 seconden
-        setInterval(moveCircle, interval);
+        // Beweeg de cirkel elke 'cooldown' milliseconden
+        setInterval(moveCircle, cooldown);
 
         // Functie om de kleur van de cirkel te veranderen en een willekeurig woord te tonen
         circle.addEventListener('click', () => {
