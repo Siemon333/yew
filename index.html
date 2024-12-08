@@ -18,73 +18,8 @@
 
         .circle {
             width: 200px;
-            height: 200px;
-            background-color: purple;
-            border-radius: 50%;
-            position: absolute;
-            transition: all 0.5s ease;
-        }
+  
 
-        .word {
-            position: absolute;
-            font-size: 3em;
-            color: white;
-            border: 3px solid black;
-            padding: 20px;
-            display: none; /* Verbergen totdat het getoond wordt */
-        }
-    </style>
-</head>
-<body>
-    <div class="circle"></div>
-    <div class="word" id="wordDisplay"></div>
-
-    <script>
-        const circle = document.querySelector('.circle');
-        const wordDisplay = document.getElementById('wordDisplay');
-        const words = ["leukheid", "coolheid", "scamheid", "goeiheid", "sensatieheid"];
-        let speed = 1;
-        let interval = 3000;
-
-        // Functie om de cirkel naar een willekeurige locatie te verplaatsen
-        function moveCircle() {
-            const maxX = window.innerWidth - circle.offsetWidth;
-            const maxY = window.innerHeight - circle.offsetHeight;
-
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
-
-            circle.style.transition = `all ${speed}s ease`;
-            circle.style.left = `${randomX}px`;
-            circle.style.top = `${randomY}px`;
-
-            // Verlaag de snelheid exponentieel
-            speed = Math.max(0.1, speed * 0.9);
-        }
-
-        // Beweeg de cirkel elke 3 seconden
-        setInterval(moveCircle, interval);
-
-        // Functie om de kleur van de cirkel te veranderen en een willekeurig woord te tonen
-        circle.addEventListener('click', () => {
-            // Verander de kleur van de cirkel naar een willekeurige kleur
-            const randomColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Willekeurige kleur
-            circle.style.backgroundColor = randomColor;
-
-            // Kies een willekeurig woord uit de lijst
-            const randomWord = words[Math.floor(Math.random() * words.length)];
-
-            // Toon het woord in het midden van het scherm
-            wordDisplay.textContent = randomWord;
-            wordDisplay.style.color = randomColor; // De tekst krijgt dezelfde kleur als de cirkel
-            wordDisplay.style.display = 'block'; // Maak het woord zichtbaar
-            wordDisplay.style.left = `calc(50% - ${wordDisplay.offsetWidth / 2}px)`; // Centraal uitlijnen
-            wordDisplay.style.top = `calc(50% - ${wordDisplay.offsetHeight / 2}px)`; // Centraal uitlijnen
-
-            // Verberg het woord na 2 seconden
-            setTimeout(() => {
-                wordDisplay.style.display = 'none';
-            }, 2000);
         });
     </script>
 </body>
