@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paarse Vierkant</title>
+    <title>Paarse Cirkel</title>
     <style>
         body {
             display: flex;
@@ -11,16 +11,18 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: black; /* Achtergrond zwart */
         }
-        .square {
+
+        .circle {
             width: 200px;
             height: 200px;
             background-color: purple;
+            border-radius: 50%; /* Maakt het een cirkel */
         }
     </style>
 </head>
 <body>
-    <div class="square"></div>
+    <div class="circle"></div>
 </body>
 </html>
