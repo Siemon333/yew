@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paarse Cirkel</title>
+    <title>Paarse Cirkel met Beweging</title>
     <style>
         body {
             display: flex;
@@ -11,18 +11,47 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: black; /* Achtergrond zwart */
+            background-color: black;
+            overflow: hidden; /* Zorgt ervoor dat de cirkel niet buiten het scherm gaat */
         }
 
         .circle {
             width: 200px;
             height: 200px;
             background-color: purple;
-            border-radius: 50%; /* Maakt het een cirkel */
+            border-radius: 50%;
+            position: absolute; /* Voor dynamische positionering */
+            transition: all 0.5s ease; /* Zachte overgang bij beweging */
         }
     </style>
 </head>
 <body>
     <div class="circle"></div>
+
+    <script>
+        const circle = document.querySelector('.circle');
+        let speed = 1; // Start snelheid
+        let interval = 3000; // Interval in milliseconden (3 seconden)
+
+        function moveCircle() {
+            // Krijg een willekeurige positie binnen het scherm
+            const maxX = window.innerWidth - circle.offsetWidth;
+            const maxY = window.innerHeight - circle.offsetHeight;
+
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            // Beweeg de cirkel naar de willekeurige positie met een exponentiële vertraging in snelheid
+            circle.style.transition = `all ${speed}s ease`;
+            circle.style.left = `${randomX}px`;
+            circle.style.top = `${randomY}px`;
+
+            // Verlaag de snelheid exponentieel
+            speed = Math.max(0.1, speed * 0.9); // De snelheid kan niet lager dan 0.1s gaan
+        }
+
+        // Beweeg de cirkel elke 3 seconden
+        setInterval(moveCircle, interval);
+    </script>
 </body>
 </html>
