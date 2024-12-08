@@ -34,34 +34,25 @@
             color: white;
             font-size: 1em;
         }
-
-        .line {
-            position: absolute;
-            height: 2px;
-            background-color: white;
-            transform-origin: 0 50%;
-        }
     </style>
 </head>
 <body>
     <div class="circle"></div>
     <div class="word" id="wordDisplay"></div>
     <div class="color-info" id="colorInfo">
-        <div>Text Color: <span id="textColor">#FFFFFF</span></div>
-        <div>Circle Color: <span id="circleColor">#800080</span></div>
+        <div>Text Color (Hex): <span id="textColor">#FFFFFF</span></div>
+        <div>Circle Color (Hex): <span id="circleColor">#800080</span></div>
     </div>
-    <div class="line" id="line"></div>
 
     <script>
-        let x = 900; // Bewegingstijd van de cirkel (in milliseconden)
-        let cooldown = 1100; // Cooldown tussen bewegingen (in milliseconden)
-        let textSize = 2; // Tekstgrootte van het woord (in em)
-        let circleSize = 270; // Grootte van de cirkel (in pixels)
+        let x = 3000; // Bewegingstijd van de cirkel (in milliseconden)
+        let cooldown = 5000; // Cooldown tussen bewegingen (in milliseconden)
+        let textSize = 3; // Tekstgrootte van het woord (in em)
+        let circleSize = 200; // Grootte van de cirkel (in pixels)
         let colorChangeDuration = 1000; // Duur van kleurverandering (in milliseconden)
 
         const circle = document.querySelector('.circle');
         const wordDisplay = document.getElementById('wordDisplay');
-        const line = document.getElementById('line');
         const textColorDisplay = document.getElementById('textColor');
         const circleColorDisplay = document.getElementById('circleColor');
         const words = ["leukheid", "coolheid", "scamheid", "goeiheid", "sensatieheid"];
@@ -82,24 +73,6 @@
             const randomX = Math.random() * maxX;
             const randomY = Math.random() * maxY;
 
-            // Zorg dat punt B exponentieel naar de volgende locatie beweegt
-            const deltaX = randomX - currentX;
-            const deltaY = randomY - currentY;
-            let progress = 0;
-
-            const moveLineDuration = cooldown - x; // Tijd die punt B erover doet om te bewegen (cooldown - bewegingstijd cirkel)
-            const moveLine = setInterval(() => {
-                progress += 0.1; // Exponentiële vooruitgang
-                const bx = currentX + progress * deltaX;
-                const by = currentY + progress * deltaY;
-                drawLine(currentX, currentY, bx, by);
-
-                if (progress >= 1) {
-                    clearInterval(moveLine);
-                    drawLine(currentX, currentY, randomX, randomY);
-                }
-            }, moveLineDuration / 10); // Verdeel de tijd over de interval
-
             circle.style.transition = `all ${x / 1000}s ease`; // Gebruik de waarde van 'x' om de bewegingstijd in te stellen
             circle.style.left = `${randomX}px`;
             circle.style.top = `${randomY}px`;
@@ -113,14 +86,6 @@
 
         // Beweeg de cirkel elke 'cooldown' milliseconden
         setInterval(moveCircle, cooldown);
-
-        // Functie om een lijn te tekenen van punt A naar punt B
-        function drawLine(ax, ay, bx, by) {
-            const length = Math.hypot(bx - ax, by - ay);
-            const angle = Math.atan2(by - ay, bx - ax) * (180 / Math.PI);
-            line.style.width = `${length}px`;
-            line.style.transform = `translate(${ax}px, ${ay}px) rotate(${angle}deg)`;
-        }
 
         // Functie om de kleur van de cirkel te veranderen en een willekeurig woord te tonen
         circle.addEventListener('click', () => {
@@ -145,14 +110,22 @@
             }, 2000);
 
             // Werk de kleurcodes bij
-            textColorDisplay.textContent = randomColor;
+            const textColorHex = rgbToHex(getComputedStyle(wordDisplay).color);
+            textColorDisplay.textContent = textColorHex;
         });
 
         // Bijwerken van cirkelkleurcode
         setInterval(() => {
             const circleColor = getComputedStyle(circle).backgroundColor;
-            circleColorDisplay.textContent = circleColor;
+            const circleColorHex = rgbToHex(circleColor);
+            circleColorDisplay.textContent = circleColorHex;
         }, 100);
+
+        // Functie om RGB-kleuren om te zetten naar Hex
+        function rgbToHex(rgb) {
+            const result = rgb.match(/\d+/g).map(x => parseInt(x).toString(16).padStart(2, '0'));
+            return `#${result.join('')}`;
+        }
 
         // Startlocatie van de cirkel
         currentX = window.innerWidth / 2;
