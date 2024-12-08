@@ -22,13 +22,13 @@
             background-color: purple;
             border-radius: 50%;
             position: absolute;
-            transition: all 0.5s ease;
+            transition: all ease;
         }
 
         .word {
             position: absolute;
             font-size: 3em;
-            display: none; /* Verbergen totdat het getoond wordt */
+            display: none;
         }
     </style>
 </head>
@@ -37,11 +37,13 @@
     <div class="word" id="wordDisplay"></div>
 
     <script>
+        let x = 2; // Verander deze waarde om de bewegingstijd van de cirkel aan te passen (in seconden)
+
         const circle = document.querySelector('.circle');
         const wordDisplay = document.getElementById('wordDisplay');
         const words = ["leukheid", "coolheid", "scamheid", "goeiheid", "sensatieheid"];
         let speed = 1;
-        let interval = 3000;
+        let interval = 500; // Cooldown ingesteld op 0,5 seconden
 
         // Functie om de cirkel naar een willekeurige locatie te verplaatsen
         function moveCircle() {
@@ -51,7 +53,7 @@
             const randomX = Math.random() * maxX;
             const randomY = Math.random() * maxY;
 
-            circle.style.transition = `all ${speed}s ease`;
+            circle.style.transition = `all ${x}s ease`; // Gebruik de waarde van 'x' om de bewegingstijd in te stellen
             circle.style.left = `${randomX}px`;
             circle.style.top = `${randomY}px`;
 
@@ -59,32 +61,8 @@
             speed = Math.max(0.1, speed * 0.9);
         }
 
-        // Beweeg de cirkel elke 3 seconden
+        // Beweeg de cirkel elke 0,5 seconden
         setInterval(moveCircle, interval);
-
-        // Functie om de complementaire kleur te berekenen
-        function complementaryColor(hex) {
-            const rgb = hexToRgb(hex);
-            const compRgb = {
-                r: 255 - rgb.r,
-                g: 255 - rgb.g,
-                b: 255 - rgb.b
-            };
-            return rgbToHex(compRgb.r, compRgb.g, compRgb.b);
-        }
-
-        // Functie om hex naar rgb te converteren
-        function hexToRgb(hex) {
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return { r, g, b };
-        }
-
-        // Functie om rgb naar hex te converteren
-        function rgbToHex(r, g, b) {
-            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
-        }
 
         // Functie om de kleur van de cirkel te veranderen en een willekeurig woord te tonen
         circle.addEventListener('click', () => {
