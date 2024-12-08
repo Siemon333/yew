@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paarse Cirkel met Interactie</title>
+    <title>Interactie met Paarse Cirkel</title>
     <style>
         body {
             display: flex;
@@ -26,22 +26,47 @@
             position: absolute;
             display: none;
         }
+
+        .color-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 1em;
+        }
+
+        .line {
+            position: absolute;
+            height: 2px;
+            background-color: white;
+            transform-origin: 0 50%;
+        }
     </style>
 </head>
 <body>
     <div class="circle"></div>
     <div class="word" id="wordDisplay"></div>
+    <div class="color-info" id="colorInfo">
+        <div>Text Color: <span id="textColor">#FFFFFF</span></div>
+        <div>Circle Color: <span id="circleColor">#800080</span></div>
+    </div>
+    <div class="line" id="line"></div>
 
     <script>
         let x = 0.9; // Bewegingstijd van de cirkel (in seconden)
         let cooldown = 1000; // Cooldown tussen bewegingen (in milliseconden)
-        let textSize = 2.3; // Tekstgrootte van het woord (in em)
-        let circleSize = 330; // Grootte van de cirkel (in pixels)
+        let textSize = 2; // Tekstgrootte van het woord (in em)
+        let circleSize = 270; // Grootte van de cirkel (in pixels)
+        let colorChangeDuration = 1; // Duur van kleurverandering (in seconden)
 
         const circle = document.querySelector('.circle');
         const wordDisplay = document.getElementById('wordDisplay');
+        const line = document.getElementById('line');
+        const textColorDisplay = document.getElementById('textColor');
+        const circleColorDisplay = document.getElementById('circleColor');
         const words = ["leukheid", "coolheid", "scamheid", "goeiheid", "sensatieheid"];
         let speed = 1;
+        let currentX, currentY;
 
         // Stel de grootte van de cirkel en tekst in
         circle.style.width = `${circleSize}px`;
@@ -57,9 +82,29 @@
             const randomX = Math.random() * maxX;
             const randomY = Math.random() * maxY;
 
+            // Zorg dat punt B exponentieel naar de volgende locatie beweegt
+            const deltaX = randomX - currentX;
+            const deltaY = randomY - currentY;
+            let progress = 0;
+
+            const moveLine = setInterval(() => {
+                progress += 0.1; // Exponentiële vooruitgang
+                const bx = currentX + progress * deltaX;
+                const by = currentY + progress * deltaY;
+                drawLine(currentX, currentY, bx, by);
+
+                if (progress >= 1) {
+                    clearInterval(moveLine);
+                    drawLine(currentX, currentY, randomX, randomY);
+                }
+            }, cooldown / 10);
+
             circle.style.transition = `all ${x}s ease`; // Gebruik de waarde van 'x' om de bewegingstijd in te stellen
             circle.style.left = `${randomX}px`;
             circle.style.top = `${randomY}px`;
+
+            currentX = randomX + circleSize / 2;
+            currentY = randomY + circleSize / 2;
 
             // Verlaag de snelheid exponentieel
             speed = Math.max(0.1, speed * 0.9);
@@ -68,10 +113,19 @@
         // Beweeg de cirkel elke 'cooldown' milliseconden
         setInterval(moveCircle, cooldown);
 
+        // Functie om een lijn te tekenen van punt A naar punt B
+        function drawLine(ax, ay, bx, by) {
+            const length = Math.hypot(bx - ax, by - ay);
+            const angle = Math.atan2(by - ay, bx - ax) * (180 / Math.PI);
+            line.style.width = `${length}px`;
+            line.style.transform = `translate(${ax}px, ${ay}px) rotate(${angle}deg)`;
+        }
+
         // Functie om de kleur van de cirkel te veranderen en een willekeurig woord te tonen
         circle.addEventListener('click', () => {
             // Verander de kleur van de cirkel naar een willekeurige kleur
             const randomColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Willekeurige kleur
+            circle.style.transition = `background-color ${colorChangeDuration}s ease`;
             circle.style.backgroundColor = randomColor;
 
             // Kies een willekeurig woord uit de lijst
@@ -88,7 +142,21 @@
             setTimeout(() => {
                 wordDisplay.style.display = 'none';
             }, 2000);
+
+            // Werk de kleurcodes bij
+            textColorDisplay.textContent = randomColor;
         });
+
+        // Bijwerken van cirkelkleurcode
+        setInterval(() => {
+            const circleColor = getComputedStyle(circle).backgroundColor;
+            circleColorDisplay.textContent = circleColor;
+        }, 100);
+
+        // Startlocatie van de cirkel
+        currentX = window.innerWidth / 2;
+        currentY = window.innerHeight / 2;
     </script>
 </body>
 </html>
+
