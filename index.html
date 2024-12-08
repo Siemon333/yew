@@ -53,11 +53,11 @@
     <div class="line" id="line"></div>
 
     <script>
-        let x = 0.9; // Bewegingstijd van de cirkel (in seconden)
-        let cooldown = 1000; // Cooldown tussen bewegingen (in milliseconden)
+        let x = 900; // Bewegingstijd van de cirkel (in milliseconden)
+        let cooldown = 1100; // Cooldown tussen bewegingen (in milliseconden)
         let textSize = 2; // Tekstgrootte van het woord (in em)
         let circleSize = 270; // Grootte van de cirkel (in pixels)
-        let colorChangeDuration = 1; // Duur van kleurverandering (in seconden)
+        let colorChangeDuration = 1000; // Duur van kleurverandering (in milliseconden)
 
         const circle = document.querySelector('.circle');
         const wordDisplay = document.getElementById('wordDisplay');
@@ -87,6 +87,7 @@
             const deltaY = randomY - currentY;
             let progress = 0;
 
+            const moveLineDuration = cooldown - x; // Tijd die punt B erover doet om te bewegen (cooldown - bewegingstijd cirkel)
             const moveLine = setInterval(() => {
                 progress += 0.1; // Exponentiële vooruitgang
                 const bx = currentX + progress * deltaX;
@@ -97,9 +98,9 @@
                     clearInterval(moveLine);
                     drawLine(currentX, currentY, randomX, randomY);
                 }
-            }, cooldown / 10);
+            }, moveLineDuration / 10); // Verdeel de tijd over de interval
 
-            circle.style.transition = `all ${x}s ease`; // Gebruik de waarde van 'x' om de bewegingstijd in te stellen
+            circle.style.transition = `all ${x / 1000}s ease`; // Gebruik de waarde van 'x' om de bewegingstijd in te stellen
             circle.style.left = `${randomX}px`;
             circle.style.top = `${randomY}px`;
 
@@ -125,7 +126,7 @@
         circle.addEventListener('click', () => {
             // Verander de kleur van de cirkel naar een willekeurige kleur
             const randomColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Willekeurige kleur
-            circle.style.transition = `background-color ${colorChangeDuration}s ease`;
+            circle.style.transition = `background-color ${colorChangeDuration / 1000}s ease`;
             circle.style.backgroundColor = randomColor;
 
             // Kies een willekeurig woord uit de lijst
@@ -159,4 +160,3 @@
     </script>
 </body>
 </html>
-
