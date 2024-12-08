@@ -45,11 +45,12 @@
     </div>
 
     <script>
-        let x = 900; // Bewegingstijd van de cirkel (in milliseconden)
-        let cooldown = 1100; // Cooldown tussen bewegingen (in milliseconden)
-        let textSize = 2; // Tekstgrootte van het woord (in em)
-        let circleSize = 270; // Grootte van de cirkel (in pixels)
+        let x = 3000; // Bewegingstijd van de cirkel (in milliseconden)
+        let cooldown = 5000; // Cooldown tussen bewegingen (in milliseconden)
+        let textSize = 3; // Tekstgrootte van het woord (in em)
+        let circleSize = 200; // Grootte van de cirkel (in pixels)
         let colorChangeDuration = 1000; // Duur van kleurverandering (in milliseconden)
+        let isMoving = false; // Houd bij of de cirkel al in beweging is
 
         const circle = document.querySelector('.circle');
         const wordDisplay = document.getElementById('wordDisplay');
@@ -67,6 +68,9 @@
 
         // Functie om de cirkel naar een willekeurige locatie te verplaatsen
         function moveCircle() {
+            if (isMoving) return; // Als de cirkel al beweegt, doe niets
+            isMoving = true;
+
             const maxX = window.innerWidth - circle.offsetWidth;
             const maxY = window.innerHeight - circle.offsetHeight;
 
@@ -82,6 +86,11 @@
 
             // Verlaag de snelheid exponentieel
             speed = Math.max(0.1, speed * 0.9);
+
+            // Wacht tot de beweging klaar is en laat nieuwe bewegingen pas daarna toe
+            setTimeout(() => {
+                isMoving = false; // Beweging is klaar, nieuwe bewegingen toegestaan
+            }, x); // De wachttijd is de bewegingstijd 'x'
         }
 
         // Beweeg de cirkel elke 'cooldown' milliseconden
@@ -89,6 +98,9 @@
 
         // Functie om de kleur van de cirkel te veranderen en een willekeurig woord te tonen
         circle.addEventListener('click', () => {
+            // Wacht tot de beweging klaar is om van kleur te veranderen
+            if (isMoving) return;
+
             // Verander de kleur van de cirkel naar een willekeurige kleur
             const randomColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Willekeurige kleur
             circle.style.transition = `background-color ${colorChangeDuration / 1000}s ease`;
