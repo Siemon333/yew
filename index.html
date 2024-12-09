@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactie met Paarse Cirkel</title>
+    <title>Zoekfunctie met Cirkel en Woorden</title>
     <style>
         body {
             display: flex;
@@ -34,6 +34,42 @@
             color: white;
             font-size: 1em;
         }
+
+        .search-container {
+            position: absolute;
+            bottom: 33%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50%;
+            text-align: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .results {
+            margin-top: 10px;
+            list-style-type: none;
+            padding: 0;
+            color: white;
+        }
+
+        .results li {
+            padding: 5px;
+            background-color: #333;
+            border-radius: 3px;
+            margin-bottom: 5px;
+        }
+
+        .results li:hover {
+            background-color: #555;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -42,6 +78,12 @@
     <div class="color-info" id="colorInfo">
         <div>Text Color (Hex): <span id="textColor">#FFFFFF</span></div>
         <div>Circle Color (Hex): <span id="circleColor">#800080</span></div>
+    </div>
+
+    <!-- Zoekbalk -->
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Typ hier om te zoeken...">
+        <ul id="searchResults" class="results"></ul>
     </div>
 
     <script>
@@ -55,9 +97,10 @@
         const wordDisplay = document.getElementById('wordDisplay');
         const textColorDisplay = document.getElementById('textColor');
         const circleColorDisplay = document.getElementById('circleColor');
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
         const words = ["leukheid", "coolheid", "scamheid", "goeiheid", "sensatieheid"];
         let speed = 1;
-        let currentX, currentY;
 
         // Stel de grootte van de cirkel en tekst in
         circle.style.width = `${circleSize}px`;
@@ -73,65 +116,64 @@
             const randomX = Math.random() * maxX;
             const randomY = Math.random() * maxY;
 
-            circle.style.transition = `all ${x / 1000}s ease`; // Gebruik de waarde van 'x' om de bewegingstijd in te stellen
+            circle.style.transition = `all ${x / 1000}s ease`;
             circle.style.left = `${randomX}px`;
             circle.style.top = `${randomY}px`;
-
-            currentX = randomX + circleSize / 2;
-            currentY = randomY + circleSize / 2;
-
-            // Verlaag de snelheid exponentieel
-            speed = Math.max(0.1, speed * 0.9);
         }
 
-        // Beweeg de cirkel na elke cooldown, onafhankelijk van of hij nog beweegt
+        // Beweeg de cirkel na elke cooldown
         setInterval(() => {
             moveCircle();
         }, cooldown);
 
+        // Dynamische zoekfunctie
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            searchResults.innerHTML = ''; // Reset de resultatenlijst
+
+            if (query) {
+                const filteredWords = words.filter(word => word.includes(query));
+                filteredWords.forEach(word => {
+                    const li = document.createElement('li');
+                    li.textContent = word;
+                    searchResults.appendChild(li);
+                });
+            }
+        });
+
         // Functie om de kleur van de cirkel te veranderen en een willekeurig woord te tonen
         circle.addEventListener('click', () => {
-            // Verander de kleur van de cirkel naar een willekeurige kleur
-            const randomColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Willekeurige kleur
+            const randomColor = `hsl(${Math.random() * 360}, 100%, 50%)`; 
             circle.style.transition = `background-color ${colorChangeDuration / 1000}s ease`;
             circle.style.backgroundColor = randomColor;
 
-            // Kies een willekeurig woord uit de lijst
             const randomWord = words[Math.floor(Math.random() * words.length)];
-
-            // Toon het woord in het midden van het scherm
             wordDisplay.textContent = randomWord;
-            wordDisplay.style.color = randomColor; // De tekst krijgt dezelfde kleur als de cirkel
-            wordDisplay.style.display = 'block'; // Maak het woord zichtbaar
-            wordDisplay.style.left = `calc(50% - ${wordDisplay.offsetWidth / 2}px)`; // Centraal uitlijnen
-            wordDisplay.style.top = `calc(50% - ${wordDisplay.offsetHeight / 2}px)`; // Centraal uitlijnen
+            wordDisplay.style.color = randomColor; 
+            wordDisplay.style.display = 'block';
+            wordDisplay.style.left = `calc(50% - ${wordDisplay.offsetWidth / 2}px)`; 
+            wordDisplay.style.top = `calc(50% - ${wordDisplay.offsetHeight / 2}px)`; 
 
-            // Verberg het woord na 2 seconden
             setTimeout(() => {
                 wordDisplay.style.display = 'none';
             }, 2000);
 
-            // Werk de kleurcodes bij
             const textColorHex = rgbToHex(getComputedStyle(wordDisplay).color);
             textColorDisplay.textContent = textColorHex;
         });
 
-        // Bijwerken van cirkelkleurcode
         setInterval(() => {
             const circleColor = getComputedStyle(circle).backgroundColor;
             const circleColorHex = rgbToHex(circleColor);
             circleColorDisplay.textContent = circleColorHex;
         }, 100);
 
-        // Functie om RGB-kleuren om te zetten naar Hex
         function rgbToHex(rgb) {
             const result = rgb.match(/\d+/g).map(x => parseInt(x).toString(16).padStart(2, '0'));
             return `#${result.join('')}`;
         }
 
-        // Startlocatie van de cirkel
-        currentX = window.innerWidth / 2;
-        currentY = window.innerHeight / 2;
+        moveCircle();
     </script>
 </body>
 </html>
